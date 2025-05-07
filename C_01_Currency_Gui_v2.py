@@ -1,6 +1,6 @@
 from tkinter import *
 import all_constants as c
-import conversion_rounding
+import conversion_rounding as cr
 
 class Converter():
     """
@@ -21,8 +21,8 @@ class Converter():
                                   )
         self.currency_heading.grid(row=0)
 
-        instructions = ("Please enter a currency below and then use"
-                        "the drop down menu and enter button between"
+        instructions = ("Please enter a currency below and then use "
+                        "the drop down menu and enter button between "
                         "your chosen currencies.")
         self.currency_instructions = Label(self.currency_frame,
                                        text=instructions,
@@ -46,8 +46,8 @@ class Converter():
 
         # button list (button text | bg colour | command | row | column)
         button_details_list = [
-            ["To NZD", "#990099", lambda:self.check_currency(c.ABS_ZERO_NZD), 0, 0],
-            ["To USD", "#009900", lambda:self.check_currency(c.ABS_ZERO_USD), 0, 1],
+            ["To NZD", "#990099", lambda: self.check_currency(c.ABS_ZERO_NZD), 0, 0],
+            ["To USD", "#009900", lambda: self.check_currency(c.ABS_ZERO_USD), 0, 1],
             ["To AUD", "#009900", lambda: self.check_currency(c.ABS_ZERO_AUD), 0, 2],
             ["Help / Info", "#CC6600", "", 1, 0],
             ["History / Export", "#004C99", "", 1, 1]
@@ -66,54 +66,54 @@ class Converter():
             self.button_ref_list.append(self.make_button)
 
         # retrieve 'history / export' button and disable it at the start
-        self.to_history_button = self.button_ref_list[3].config(state=DISABLED)
+        self.to_history_button = self.button_ref_list[4].config(state=DISABLED)
 
 
-    def check_currency(self,min_currency,):
+    def check_currency(self, min_currency):
         """
-        Checks currencyerature is valid and either invokes calculation
-         function or shows a custom error
+        Checks currency is valid and either invokes calculation
+        function or shows a custom error
         """
-        # Retrieve curren to be converted
         to_convert = self.currency_entry.get()
 
-        # Reset label and entry box (if we had an error)
         self.answer_error.config(fg="#004C99", font=("Arial", "13", "bold"))
         self.currency_entry.config(bg="#FFFFFF")
 
         error = f"Enter a number more than / equal to {min_currency}"
         has_errors = "no"
 
-        # checks that amount to be converted is a number above absolute zero
         try:
             to_convert = float(to_convert)
             if to_convert >= min_currency:
                 error = ""
-                self.convert(min_currency)
+                self.convert(min_currency, to_convert)
             else:
                 error = "Too Low"
-
         except ValueError:
             error = "Please enter a number"
 
-        # display the error if necessary
         if error != "":
             self.answer_error.config(text=error, fg="#9C0000")
             self.currency_entry.config(bg="#F4CCCC")
             self.currency_entry.delete(0, END)
 
     def convert(self, min_currency, to_convert):
-
+        """
+        Stub method for conversion display
+        """
         if min_currency == c.ABS_ZERO_USD:
-            self.answer_error.config(text=f"Converting {to_convert}°C to °F")
+            self.answer_error.config(text=f"Converting {to_convert} to USD")
+        elif min_currency == c.ABS_ZERO_AUD:
+            self.answer_error.config(text=f"Converting {to_convert} to AUD")
+        elif min_currency == c.ABS_ZERO_NZD:
+            self.answer_error.config(text=f"Converting {to_convert} to NZD")
         else:
-            self.answer_error.config(text=f"Converting {to_convert}°F to °C")
-
+            self.answer_error.config(text="Unknown currency")
 
 
 # main routine
 if __name__ == "__main__":
     root = Tk()
-    root.title("currencyerature Convertor")
+    root.title("Currency Converter")
     Converter()
     root.mainloop()

@@ -8,24 +8,24 @@ def round_ans(val):
     return "{:.0f}".format(var_rounded)
 
 
-def to_celsius(to_convert):
+def to_AUD(to_convert):
     """
-    Converts from °F to °C
-    :param to_convert: Temperature to be converted in °F
-    :return: Converted temperature in °C
+    Converts from NZD to AUD
+    :param to_convert: Temperature to be converted in NZD
+    :return: Converted temperature in AUD
     """
 
-    answer = (to_convert - 32) * 5 / 9
+    answer = to_convert * 1.67
     return round_ans(answer)
 
 
-def to_fahrenheit(to_convert):
+def to_USD(to_convert):
     """
-    Converts from °C to °F
-    :param to_convert: Temperature to be converted in °C
-    :return: Converted temperature in °F
+    Converts from NZD to USD
+    :param to_convert: Temperature to be converted in NZD
+    :return: Converted temperature in USD
     """
-    answer = to_convert * 1.8 + 32
+    answer = to_convert * 0.6
     return round_ans(answer)
 
 
