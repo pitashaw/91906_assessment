@@ -12,7 +12,8 @@ class Converter:
         self.currency_frame.grid()
 
         self.currency_heading = Label(self.currency_frame,
-                                      text="Currency Converter",
+                                      text="WubbaLubbaBux™:Currency Converter, "
+                                           "Sponsored by Your Mom’s Third Cousin’s Dog ",
                                       font=("Arial", "16", "bold"))
         self.currency_heading.grid(row=0)
 
@@ -62,15 +63,16 @@ class Converter:
         self.answer_error.config(fg="#004C99", font=("Arial", "13", "bold"))
         self.currency_entry.config(bg="#FFFFFF")
 
-        error = "Enter a valid number greater than or equal to 0"
+        error = "Enter a valid number greater than or equal to 1"
         has_errors = False
 
         try:
             to_convert = float(to_convert)
-            if to_convert >= 0:
+            if to_convert >= 1:
                 self.convert(convert_to_usd, to_convert)
             else:
                 has_errors = True
+
         except ValueError:
             has_errors = True
 
@@ -146,7 +148,8 @@ class HistoryExport:
         self.history_frame = Frame(self.history_box)
         self.history_frame.grid()
 
-        calc_amount = "all your" if len(calculations) <= 5 else f"your recent calculations - showing 5 / {len(calculations)}"
+        calc_amount = "all your" if len(calculations) <= 5 else f"your recent calculations - " \
+                                                                f"showing 5 / {len(calculations)}"
         recent_intro_txt = f"Below are {calc_amount} calculations."
 
         newest_first_list = list(reversed(calculations))
