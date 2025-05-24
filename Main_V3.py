@@ -3,7 +3,7 @@ from functools import partial
 import conversion_rounding as cr  # make sure this file exists with to_AUD and to_USD functions
 from datetime import date
 
-
+#Basic framework for converter
 class Converter:
     def __init__(self):
         self.all_calculations_list = []
@@ -56,7 +56,8 @@ class Converter:
         self.to_help_button = self.button_ref_list[2]
         self.to_history_button = self.button_ref_list[3]
         self.to_history_button.config(state=DISABLED)
-
+        
+    #Checks that the user inputs a number greater than or equal to 1
     def check_currency(self, convert_to_usd):
         to_convert = self.currency_entry.get()
 
@@ -81,6 +82,7 @@ class Converter:
             self.currency_entry.config(bg="#F4CCCC")
             self.currency_entry.delete(0, END)
 
+    #Uses conversion rounding to calculate the currency conversions and display the answer
     def convert(self, convert_to_usd, to_convert):
         if convert_to_usd:
             answer = cr.to_USD(to_convert)
@@ -93,13 +95,15 @@ class Converter:
         self.answer_error.config(text=answer_statement)
         self.all_calculations_list.append(answer_statement)
 
+    #Help/Info button
     def to_help(self):
         DisplayHelp(self)
 
+    #History/Export button
     def to_history(self):
         HistoryExport(self, self.all_calculations_list)
 
-
+#Help/Info contents
 class DisplayHelp:
     def __init__(self, partner):
         background = "#ffe6cc"
@@ -120,7 +124,8 @@ class DisplayHelp:
         help_text = ("To use the program, enter an amount in NZD, then click "
                      "'To AUD' or 'To USD'.\n\n"
                      "You can view and export your conversion history using the "
-                     "'History / Export' button.")
+                     "'History / Export' button. "
+                     "These calculations are accurate as of 15/05/2025.")
         self.help_text_label = Label(self.help_frame,
                                      text=help_text, wraplength=350,
                                      justify="left", bg=background)
@@ -133,11 +138,12 @@ class DisplayHelp:
                                      command=partial(self.close_help, partner))
         self.dismiss_button.grid(row=2, padx=10, pady=10)
 
+    #Closes the help box
     def close_help(self, partner):
         partner.to_help_button.config(state=NORMAL)
         self.help_box.destroy()
 
-
+#History/Export contents
 class HistoryExport:
     def __init__(self, partner, calculations):
         self.history_box = Toplevel()
@@ -185,6 +191,7 @@ class HistoryExport:
                text="Close", bg="#666666", fg="#FFFFFF", width=12,
                command=partial(self.close_history, partner)).grid(row=0, column=1, padx=10, pady=10)
 
+    #Exports history to a text file
     def export_data(self, calculations):
         today = date.today()
         file_name = f"currency_{today.strftime('%Y_%m_%d')}.txt"
@@ -200,6 +207,7 @@ class HistoryExport:
                                           text=f"Export Successful! File: {file_name}",
                                           font=("Arial", "12", "bold"))
 
+    #Closes the history/export box
     def close_history(self, partner):
         partner.to_history_button.config(state=NORMAL)
         self.history_box.destroy()
