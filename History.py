@@ -1,11 +1,11 @@
 from tkinter import *
 from functools import partial  # To prevent unwanted windows
-import all_constants as c
 from datetime import date
+
 
 class Converter:
     """
-    Currency conversion tool (°C to °F or °F to °C)
+    Currency conversion tool (NZD to USD or NZD to AUD)
     """
 
     def __init__(self):
@@ -14,15 +14,15 @@ class Converter:
         """
 
         self.all_calculations_list = ['This is a test',
-                                      '10.0USD is 17.52NZD',
-                                      '10.0GBP is 22.80NZD',
-                                      '10.0GBP is 13.01USD'
+                                      '10.0 NZD is 16.70 AUD',
+                                      '10.0 NZD is 6.00 USD',
+                                      '17.00 NZD is 10.20 USD'
                                       ]
 
-        self.temp_frame = Frame(padx=10, pady=10)
-        self.temp_frame.grid()
+        self.currency_frame = Frame(padx=10, pady=10)
+        self.currency_frame.grid()
 
-        self.to_history_button = Button(self.temp_frame,
+        self.to_history_button = Button(self.currency_frame,
                                         text="History / Export",
                                         bg="#CC6600",
                                         fg="#FFFFFF",
@@ -59,24 +59,24 @@ class HistoryExport:
         self.history_frame.grid()
 
         # background colour and text for calculation area
-        if len(calculations) <= c.MAX_CALCS:
+        if len(calculations) <= 5:
             calc_back = "#D5E8D4"
             calc_amount = "all your"
         else:
             calc_back = "#ffe6cc"
             calc_amount = (f"your recent calculations - "
-                           f"showing {c.MAX_CALCS} / {len(calculations)}")
+                           f"showing {5} / {len(calculations)}")
 
         # strings for 'long' labels...
         recent_intro_txt = (f"Below are {calc_amount} calculations"
                             "-showing 5/6 calculations "
                             "(to the nearest degree).")
 
-        # Create string from calculations list (newest calculations first)
+        # Create string from calculations list (the newest calculations first)
         newest_first_string = ""
         newest_first_list = list(reversed(calculations))
 
-        if len(newest_first_list) <= c.MAX_CALCS:
+        if len(newest_first_list) <= 5:
 
             for item in newest_first_list[:-1]:
                 newest_first_string += item + "\n"
@@ -85,15 +85,15 @@ class HistoryExport:
 
         # If we have more than five items...
         else:
-            for item in newest_first_list[:c.MAX_CALCS-1]:
+            for item in newest_first_list[:5-1]:
                 newest_first_string += item + "\n"
 
-            newest_first_string += newest_first_list[c.MAX_CALCS-1]
+            newest_first_string += newest_first_list[5-1]
 
         export_instruction_txt = ("Please push <Export> to save your calculations in"
                                   "file. If the filename already exists, it will be replaced.")
 
-        calculations = ""
+        self.calculations = calculations
 
         # Label list (label text | format |bg)
         history_labels_list = [
@@ -120,11 +120,9 @@ class HistoryExport:
         self.history_button_frame = Frame(self.history_box)
         self.history_button_frame.grid(row=4)
 
-        button_ref_list = []
-
         # button list (button text | bg colour | command | row | column)
         button_details_list = [
-            ["Export", "#004C99", lambda: self.export_data(calculations), 0, 0],
+            ["Export", "#004C99", self.export_data, 0, 0],
             ["Close", "#666666", partial(self.close_history, partner), 0, 1],
         ]
 
@@ -136,35 +134,20 @@ class HistoryExport:
                                       command=btn[2])
             self.make_button.grid(row=btn[3], column=btn[4], padx=10, pady=10)
 
-    def export_data(self, calculations):
-        # **** Get current date for heading and filename ****
+    def export_data(self):
         today = date.today()
+        file_name = f"currency_{today.strftime('%Y_%m_%d')}.txt"
 
-        # Get day, month and year as individual strings
-        day = today.strftime("%d")
-        month = today.strftime("%m")
-        year = today.strftime("%Y")
+        with open(file_name, "w") as f:
+            f.write("***** Currency Calculations ******\n")
+            f.write(f"Generated: {today.strftime('%d/%m/%Y')}\n\n")
+            f.write("Here is your calculation history (oldest to newest)...\n")
+            for item in self.calculations:
+                f.write(item + "\n")
 
-        file_name = f"temperatures_{year}_{month}_{day}"
-
-        # edit label so users know that their export has been done
-        success_string = ("Export Successful! The file is called "
-                          f"{file_name}.txt")
-        self.export_filename_label.config(bg="#009900", text=success_string,
+        self.export_filename_label.config(bg="#009900",
+                                          text=f"Export Successful! File: {file_name}",
                                           font=("Arial", "12", "bold"))
-
-        # write data to text file
-        write_to = f"{file_name}.txt"
-
-        with open(write_to, "w") as text_file:
-            text_file.write("***** Currency Calculations ******\n")
-            text_file.write(f"Generated: {day}/{month}/{year}\n\n")
-            text_file.write("Here is your calculation history (oldest to newest)...\n")
-
-            # write the item to file
-            for item in calculations:
-                text_file.write(item)
-                text_file.write("\n")
 
     def close_history(self, partner):
         """
