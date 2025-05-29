@@ -15,7 +15,7 @@ def to_AUD(to_convert):
     :return: Converted currency in AUD
     """
 
-    answer = to_convert * 1.67
+    answer = to_convert * 0.93
     return round_ans(answer)
 
 
